@@ -2,25 +2,6 @@
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
-<!-- code_chunk_output -->
-
-* [MariaDB AX Columnstore Sandbox with Zeppelin Notebooks](#mariadb-ax-columnstore-sandbox-with-zeppelin-notebooks)
-	* [Installing prerequisites](#installing-prerequisites)
-		* [Install Docker](#install-docker)
-		* [Install Docker Compose](#install-docker-compose)
-		* [Get the MariaDB AX sandbox](#get-the-mariadb-ax-sandbox)
-		* [System Requirements](#system-requirements)
-		* [Build columnstore](#build-columnstore)
-		* [Build Zeppelin instance (optional)](#build-zeppelin-instance-optional)
-		* [Bring the whole cluster up](#bring-the-whole-cluster-up)
-		* [Troubleshooting](#troubleshooting)
-	* [Zeppelin Guide](#zeppelin-guide)
-		* [What is Zeppelin](#what-is-zeppelin)
-		* [Start MariaDB AX Sandbox - Bookstore Analytics](#start-mariadb-ax-sandbox-bookstore-analytics)
-	* [Useful Links](#useful-links)
-
-<!-- /code_chunk_output -->
-
 ## Installing prerequisites
 
 ### Install Docker
@@ -37,11 +18,11 @@ https://docs.docker.com/compose/install/
 
 ### Get the MariaDB AX sandbox
 
-Checkout the images from [GitHub](https://github.com/mariadb-corporation/mariadb-columnstore-docker)
+Checkout the images from [GitHub](https://github.com/naweenbanuka/Zeppelin-columnstore-medium)
 
 ```bash
 cd /working_directory
-git clone https://github.com/mariadb-corporation/mariadb-columnstore-docker.git
+git clone https://github.com/naweenbanuka/Zeppelin-columnstore-medium.git
 ```
 
 ### System Requirements
@@ -52,23 +33,6 @@ The disk space requirement for the docker images is around 4GB.
 Make sure you are in columnstore_zeppelin folder
 
 ### Build columnstore sandbox
-#### Quick start
-You can use the following shell script to start the columnstore cluster.
-```bash
-bash sandboxdemo.sh
-```
-
-The file executes the following comands:
-
-```bash
-cd columnstore
-docker build -t mariadb/columnstore:1.2 .
-cd .columnstore_zeppelin
-echo 'y' | docker network prune &> /dev/null 
-echo ''
-docker-compose down -v
-docker-compose up --build
-docker-compose down -v
 ```
 #### Step-by-Step
 
@@ -81,59 +45,8 @@ cd columnstore_zeppelin
 *Build the docker image from definitions*
 
 ```bash
-docker build -t mariadb/columnstore:1.2 ../columnstore
+docker-compose up
 ```
-
-*Build Zeppelin instance (optional)*
-
-```
-docker build -t mariadb/columnstore_zeppelin:latest ../columnstore_zeppelin
-```
-
-*Cleanup network settings (optional)*
-Removes all unused network configurations. This step is required only if there is a previous network configurations.
-```bash
-echo 'y' | docker network prune
-```
-
-*Remove all existing volumes (optional)*
-The following command will remove all disk volumes used by this application.
-```bash
-docker-compose down -v
-```
-
-This command should be used to clean up the volumes before or after restart of the cluster.
-
-#### Start the whole cluster
-
-The command is starting a columnstore cluster with 4 nodes 2UM and 2PM modules:
-
-```bash
-docker-compose up --build
-```
-
-It can take up to 10 min before the cluster starts and the data is ingested.
-
-The following log entry marks the end of the load.
-**`"Container initialization complete at ..."`**
-
-The status of data ingest can be tracked in the UM1 container log file.
-
-```bash
-docker logs -f columnstore_zeppelin_um1_1
-```
-
-The Bookstore Sandbox Database can be accessed directly with following command:
-```bash
-mysql -h127.0.0.1 -uzeppelin_user -pzeppelin_pass bookstore
-```
-
-The docker volumes created during the process can be released using:
-```bash
-docker-compose down -v
-```
-Use this command to start clean when you need to restart theprocess.
-
 
 ### Troubleshooting
 
