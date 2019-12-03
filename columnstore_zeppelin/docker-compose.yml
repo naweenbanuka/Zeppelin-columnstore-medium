@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+
+  mcs:
+    image: mariadb/columnstore
+    container_name: mcs
+    ports:
+        - "3306:3306"
+    networks:
+        - zeppelin-network
+
+  zeppelin:
+    build: ../columnstore_zeppelin
+    image: ${ZEPPELIN_CONTAINER_NAME}
+    environment:
+        - ZEPPELIN_WEB_HOST=${ZEPPELIN_WEB_HOST}
+        - ZEPPELIN_WEB_PORT=${ZEPPELIN_WEB_PORT}
+        - ZEPPELIN_WEB_DEMO_USER=${ZEPPELIN_WEB_DEMO_USER}
+        - ZEPPELIN_WEB_DEMO_PASS=${ZEPPELIN_WEB_DEMO_PASS}
+        - ZEPPELIN_WEB_ADMIN_USER=${ZEPPELIN_WEB_ADMIN_USER}
+        - ZEPPELIN_WEB_ADMIN_PASS=${ZEPPELIN_WEB_ADMIN_PASS}
+        - MARIADB_DATABASE_SERVICE=${MARIADB_DATABASE_SERVICE}
+    ports:
+        - "8080:8080"
+    networks:
+        - zeppelin-network
+
+networks:
+  zeppelin-network:
+    driver: bridge
